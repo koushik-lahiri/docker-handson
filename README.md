@@ -1,6 +1,6 @@
 # intro-to-docker-lab
 
-This is the repository of the labs for the Intro to Docker developerWorks course.
+This repository will take you through the hands-on labs for docker.
 
 - lab0 - [Install Docker](lab0.md)
 - lab1 - [Run your first container](lab1.md)
