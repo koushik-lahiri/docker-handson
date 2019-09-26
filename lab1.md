@@ -31,9 +31,9 @@ We are going to use the Docker CLI to run our first container.
 
 1. Open a terminal on your local computer
 
-2. Run `docker container run -t ubuntu top`
+2. Run `docker container run -it ubuntu top`
 
-Use the `docker container run` command to run a container with the ubuntu image using the `top` command. The `-t` flags allocate a pseudo-TTY which we need for the `top` to work correctly.
+Use the `docker container run` command to run a container with the ubuntu image using the `top` command. The `-it` flags allocate a pseudo-TTY which we need for the `top` to work correctly.
 
 ```sh
 $ docker container run -it ubuntu top
