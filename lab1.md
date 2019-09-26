@@ -1,7 +1,5 @@
 # Lab 1 - Running Your First Container
 
-© Copyright IBM Corporation 2017
-
 IBM, the IBM logo and ibm.com are trademarks of International Business Machines Corp., registered in many jurisdictions worldwide. Other product and service names might be trademarks of IBM or other companies. A current list of IBM trademarks is available on the Web at &quot;Copyright and trademark information&quot; at www.ibm.com/legal/copytrade.shtml.
 
 This document is current as of the initial date of publication and may be changed by IBM at any time.
@@ -10,7 +8,7 @@ The information contained in these materials is provided for informational purpo
 
 # Overview
 
-In this lab, you will run your first Docker container. 
+In this lab, you will run your first Docker container.
 
 Containers are just a process (or a group of processes) running in isolation. Isolation is achieved via linux namespaces and control groups. One thing to note, is that linux namespaces and control groups are features that are built into the linux kernel! Other than the linux kernel itself, there is nothing special about containers.
 
@@ -29,7 +27,7 @@ Completed Lab 0: You must have docker installed, or be using http://play-with-do
 
 # Step 1: Run your first container
 
-We are going to use the Docker CLI to run our first container. 
+We are going to use the Docker CLI to run our first container.
 
 1. Open a terminal on your local computer
 
@@ -41,11 +39,11 @@ Use the `docker container run` command to run a container with the ubuntu image 
 $ docker container run -it ubuntu top
 Unable to find image 'ubuntu:latest' locally
 latest: Pulling from library/ubuntu
-aafe6b5e13de: Pull complete 
-0a2b43a72660: Pull complete 
-18bdd1e546d2: Pull complete 
-8198342c3e05: Pull complete 
-f56970a44fd4: Pull complete 
+aafe6b5e13de: Pull complete
+0a2b43a72660: Pull complete
+18bdd1e546d2: Pull complete
+8198342c3e05: Pull complete
+f56970a44fd4: Pull complete
 Digest: sha256:f3a61450ae43896c4332bda5e78b453f4a93179045f20c8181043b26b5e79028
 Status: Downloaded newer image for ubuntu:latest
 ```
@@ -57,7 +55,7 @@ top - 20:32:46 up 3 days, 17:40,  0 users,  load average: 0.00, 0.01, 0.00
 Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  0.0 us,  0.1 sy,  0.0 ni, 99.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
 KiB Mem :  2046768 total,   173308 free,   117248 used,  1756212 buff/cache
-KiB Swap:  1048572 total,  1048572 free,        0 used.  1548356 avail Mem 
+KiB Swap:  1048572 total,  1048572 free,        0 used.  1548356 avail Mem
 
   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND    
     1 root      20   0   36636   3072   2640 R   0.3  0.2   0:00.04 top        
@@ -68,7 +66,7 @@ KiB Swap:  1048572 total,  1048572 free,        0 used.  1548356 avail Mem
 
 Containers use linux namespaces to provide isolation of system resources from other containers or the host. The PID namespace provides isolation for process IDs. If you run `top` while inside the container, you will notice that it shows the processes within the PID namespace of the container, which is much different than what you can see if you ran `top` on the host.
 
-Even though we are using the `ubuntu` image, it is important to note that our container does not have its own kernel. Its uses the kernel of the host and the `ubuntu` image is used only to provide the file system and tools available on an ubuntu system. 
+Even though we are using the `ubuntu` image, it is important to note that our container does not have its own kernel. Its uses the kernel of the host and the `ubuntu` image is used only to provide the file system and tools available on an ubuntu system.
 
 3. Inspect the container with `docker container exec`
 
@@ -80,7 +78,7 @@ Open a new terminal. To open a new terminal connected to node1 using play-with-d
 [node2] (local) root@192.168.0.17 ~
 $ ssh 192.168.0.18
 [node1] (local) root@192.168.0.18 ~
-$ 
+$
 ```
 
 In the new terminal, use the `docker container ls` command to get the ID of the running container you just created.
@@ -96,13 +94,13 @@ b3ad2a23fab3        ubuntu                     "top"                    29 minut
 Then use that id to run `bash` inside that container using the `docker container exec` command. Since we are using bash and want to interact with this container from our terminal, use `-it` flags to run using interactive mode while allocating a psuedo-terminal.
 
 ```sh
-$ docker container exec -it b3ad2a23fab3 bash 
-root@b3ad2a23fab3:/# 
+$ docker container exec -it b3ad2a23fab3 bash
+root@b3ad2a23fab3:/#
 ```
 
 And Voila! We just used the `docker container exec` command to "enter" our container's namespaces with our bash process. Using `docker container exec` with `bash` is a common pattern to inspect a docker container.
 
-Notice the change in the prefix of your terminal. e.g. `root@b3ad2a23fab3:/`. This is an indication that we are running bash "inside" of our container. 
+Notice the change in the prefix of your terminal. e.g. `root@b3ad2a23fab3:/`. This is an indication that we are running bash "inside" of our container.
 
 **Note**: This is not the same as ssh'ing into a separate host or a VM. We don't need an ssh server to connect with a bash process. Remember that containers use kernel-level features to achieve isolation and that containers run on top of the kernel. Our container is just a group of processes running in isolation on the same host, and we can use `docker container exec` to enter that isolation with the `bash` process. After running `docker container exec`, the group of processes running in isolation (i.e. our container) include `top` and `bash`.
 
@@ -135,9 +133,9 @@ PID is just one of the linux namespaces that provides containers with isolation 
 
 These namespaces together provide the isolation for containers that allow them to run together securely and without conflict with other containers running on the same system. Next we will demonstrate different uses of containers. and the benefit of isolation as we run multiple containers on the same host.
 
-**Note**: Namespaces are a feature of the **linux** kernel. But Docker allows you to run containers on Windows and Mac... how does that work? The secret is that embedded in the Docker product is a linux subsystem. Docker open-sourced this linux subsystem to a new project: [LinuxKit](https://github.com/linuxkit/linuxkit). Being able to run containers on many different platforms is one advantage of using the Docker tooling with containers. 
+**Note**: Namespaces are a feature of the **linux** kernel. But Docker allows you to run containers on Windows and Mac... how does that work? The secret is that embedded in the Docker product is a linux subsystem. Docker open-sourced this linux subsystem to a new project: [LinuxKit](https://github.com/linuxkit/linuxkit). Being able to run containers on many different platforms is one advantage of using the Docker tooling with containers.
 
-In additional to running linux containers on Windows using a linux subsystem, native Windows containers are now possible due the creation of container primitives on the Windows OS. Native Windows containers can be run on Windows 10 or Windows Server 2016 or newer. 
+In additional to running linux containers on Windows using a linux subsystem, native Windows containers are now possible due the creation of container primitives on the Windows OS. Native Windows containers can be run on Windows 10 or Windows Server 2016 or newer.
 
 4. Clean up the container running the `top` processes by typing: `<ctrl>-c.`
 
@@ -148,7 +146,7 @@ In additional to running linux containers on Windows using a linux subsystem, na
 The [Docker Store](https://store.docker.com) is the public central registry for Docker images. Anyone can share images here publicly. The Docker Store contains community and official images that can also be found directly on the [Docker Hub](https://hub.docker.com/explore/).
 
 When searching for images you will find filters for "Store" vs "Community" images. "Store" images include content that has been verified and scanned for security vulnerabilities by Docker. Go one step further and search for "Certified" images, that are deemed enterprise-ready and are tested with Docker Enterprise Edition product. It is important to avoid using unverified content from the Docker Store when developing your own images that are intended to be deployed into the production environment. These unverified images may contain security vulnerabilities or possibly even malicious software.
- 
+
 In Step 2 of this lab, we will start a couple of containers using some verified images from the Docker Store: nginx web server, and mongo database.
 
 2. Run an Nginx server
@@ -159,17 +157,17 @@ Let's run a container using the [official Nginx image](https://store.docker.com/
 $ docker container run --detach --publish 8080:80 --name nginx nginx
 Unable to find image 'nginx:latest' locally
 latest: Pulling from library/nginx
-36a46ebd5019: Pull complete 
-57168433389f: Pull complete 
-332ec8285c50: Pull complete 
+36a46ebd5019: Pull complete
+57168433389f: Pull complete
+332ec8285c50: Pull complete
 Digest: sha256:c15f1fb8fd55c60c72f940a76da76a5fccce2fefa0dd9b17967b9e40b0355316
 Status: Downloaded newer image for nginx:latest
 5e1bf0e6b926bd73a66f98b3cbe23d04189c16a43d55dd46b8486359f6fdf048
 ```
 
-We are using a couple of new flags here. The `--detach` flag will run this container in the background. The `publish` flag publishes port 80 in the container (the default port for nginx), via port 8080 on our host. Remember that the NET namespace gives processes of the container their own network stack. The `--publish` flag is a feature that allows us to expose networking through the container onto the host. 
+We are using a couple of new flags here. The `--detach` flag will run this container in the background. The `publish` flag publishes port 80 in the container (the default port for nginx), via port 8080 on our host. Remember that the NET namespace gives processes of the container their own network stack. The `--publish` flag is a feature that allows us to expose networking through the container onto the host.
 
-How do you know port 80 is the default port for nginx? Because it is listed in the [documentation](https://store.docker.com/images/nginx) on the Docker Store. In general, the documentation for the verified images is very good, and you will want to refer to them when running containers using those images. 
+How do you know port 80 is the default port for nginx? Because it is listed in the [documentation](https://store.docker.com/images/nginx) on the Docker Store. In general, the documentation for the verified images is very good, and you will want to refer to them when running containers using those images.
 
 We are also specifying the `--name` flag, which names the container. Every container has a name, if you don't specify one, Docker will randomly assign one for you. Specifying your own name makes it easier to run subsequent commands on your container since you can reference the name instead of the id of the container. For example: `docker container inspect nginx` instead of `docker container inspect 5e1`.
 
@@ -188,17 +186,17 @@ Now, run a mongoDB server. We will use the [official mongoDB image](https://stor
 $ docker container run --detach --publish 8081:27017 --name mongo mongo:3.4
 Unable to find image 'mongo:3.4' locally
 3.4: Pulling from library/mongo
-d13d02fa248d: Already exists 
-bc8e2652ce92: Pull complete 
-3cc856886986: Pull complete 
-c319e9ec4517: Pull complete 
-b4cbf8808f94: Pull complete 
-cb98a53e6676: Pull complete 
-f0485050cd8a: Pull complete 
-ac36cdc414b3: Pull complete 
-61814e3c487b: Pull complete 
-523a9f1da6b9: Pull complete 
-3b4beaef77a2: Pull complete 
+d13d02fa248d: Already exists
+bc8e2652ce92: Pull complete
+3cc856886986: Pull complete
+c319e9ec4517: Pull complete
+b4cbf8808f94: Pull complete
+cb98a53e6676: Pull complete
+f0485050cd8a: Pull complete
+ac36cdc414b3: Pull complete
+61814e3c487b: Pull complete
+523a9f1da6b9: Pull complete
+3b4beaef77a2: Pull complete
 Digest: sha256:d13c897516e497e898c229e2467f4953314b63e48d4990d3215d876ef9d1fc7c
 Status: Downloaded newer image for mongo:3.4
 d8f614a4969fb1229f538e171850512f10f490cb1a96fca27e4aa89ac082eba5
@@ -239,7 +237,7 @@ While running images directly from the Docker Store can be useful at times, it i
 Completing this lab results in a bunch of running containers on your host. Let's clean these up.
 
 
-1. First get a list of the containers running using `docker container ls`. 
+1. First get a list of the containers running using `docker container ls`.
 
 
 ```sh
@@ -289,4 +287,3 @@ Key Takeaways
 - Because of the isolation properties of containers, you can schedule many containers on a single host without worrying about conflicting dependencies. This makes it easier to run multiple containers on a single host: fully utilizing resources allocated to that host, and ultimately saving some money on server costs.
 -  Avoid using unverified content from the Docker Store when developing your own images because these images may contain security vulnerabilities or possibly even malicious software.
 - Containers include everything they need to run the processes within them, so there is no need to install additional dependencies directly on your host.
-

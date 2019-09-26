@@ -1,7 +1,5 @@
 # Lab 2- Adding Value with Custom Docker Images
 
-© Copyright IBM Corporation 2017
-
 IBM, the IBM logo and ibm.com are trademarks of International Business Machines Corp., registered in many jurisdictions worldwide. Other product and service names might be trademarks of IBM or other companies. A current list of IBM trademarks is available on the Web at &quot;Copyright and trademark information&quot; at www.ibm.com/legal/copytrade.shtml.
 
 This document is current as of the initial date of publication and may be changed by IBM at any time.
@@ -58,13 +56,13 @@ Requirement already satisfied: Jinja2>=2.4 in /usr/local/lib/python3.6/site-pack
 Requirement already satisfied: click>=2.0 in /usr/local/lib/python3.6/site-packages (from flask)
 Requirement already satisfied: Werkzeug>=0.7 in /usr/local/lib/python3.6/site-packages (from flask)
 Requirement already satisfied: MarkupSafe>=0.23 in /usr/local/lib/python3.6/site-packages (from Jinja2>=2.4->flask)
-$ python3 app.py 
+$ python3 app.py
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ```
 
 # Step 2: Create and build the Docker Image
 
-If you don't have python install locally, don't worry! Because you don't need it. One of the advantages of using Docker containers is that you can build python into your containers, without having python installed on your host. 
+If you don't have python install locally, don't worry! Because you don't need it. One of the advantages of using Docker containers is that you can build python into your containers, without having python installed on your host.
 
 1. Create `Dockerfile` with the following contents
 ```sh
@@ -79,30 +77,30 @@ A Dockerfile lists the instructions needed to build a docker image. Let's go thr
 **FROM python:3.6.1-alpine**
 This is the starting point for your Dockerfile. Every Dockerfile must start with a `FROM` line that is the starting image to build your layers on top of. In this case, we are selecting the `python:3.6.1-alpine` base layer since it already has the version of python and pip that we need to run our application. The `alpine` version means that it uses the alpine distribution, which is significantly smaller than an alternative flavor of linux. A smaller image means it will download (deploy) much faster, and it also has advantages for security because it has a smaller attack surface.
 
-Here we are using the "3.6.1-alpine" tag for the python image. Take a look at the available tags for the official python image on the [Docker Hub](https://hub.docker.com/_/python/). It is best practice to use a specific tag when inheriting a parent image so that changes to the parent dependency are controlled. If no tag is specified, the "latest" tag takes into effect, which is acts as a dynamic pointer that points to the latest version of an image. 
+Here we are using the "3.6.1-alpine" tag for the python image. Take a look at the available tags for the official python image on the [Docker Hub](https://hub.docker.com/_/python/). It is best practice to use a specific tag when inheriting a parent image so that changes to the parent dependency are controlled. If no tag is specified, the "latest" tag takes into effect, which is acts as a dynamic pointer that points to the latest version of an image.
 
 For security reasons, it is very important to understand the layers that you build your docker image on top of. For that reason, it is highly recommended to only use "official" images found in the [docker hub](https://hub.docker.com/), or non-community images found in the docker-store. These images are [vetted](https://docs.docker.com/docker-hub/official_repos/) to meet certain security requirements, and also have very good documentation for users to follow. You can find more information about this [python base image](https://store.docker.com/images/python), as well as all other images that you can use, on the [docker store](https://store.docker.com/).
 
 For a more complex application you may find the need to use a`FROM` image that is higher up the chain. For example, the parent [Dockerfile](https://github.com/docker-library/python/blob/88ba87d31a3033d4dbefecf44ce25aa1b69ab3e5/3.6/alpine/Dockerfile) for our python app  starts with `FROM alpine`, then specifies a series of `CMD` and `RUN` commands for the image. If you needed more fine-grained control, you could start with `FROM alpine` (or a different distribution) and run those steps yourself. To start off though, I recommend using an official image that closely matches your needs.
 
 **RUN pip install flask**
-The `RUN` command executes commands needed to set up your image for your application, such as installing packages, editing files, or changing file permissions. In this case we are installing flask. The `RUN` commands are executed at build time, and are added to the layers of your image. 
+The `RUN` command executes commands needed to set up your image for your application, such as installing packages, editing files, or changing file permissions. In this case we are installing flask. The `RUN` commands are executed at build time, and are added to the layers of your image.
 
 **CMD ["python","app.py"]**
-`CMD` is the command that is executed when you start a container. Here we are using `CMD` to run our python app. 
+`CMD` is the command that is executed when you start a container. Here we are using `CMD` to run our python app.
 
-There can be only one `CMD` per Dockerfile. If you specify more thane one `CMD`, then the last `CMD` will take effect. The parent python:3.6.1-alpine also specifies a `CMD` (`CMD python2`). You can find the Dockerfile for the official python:alpine image (here) [https://github.com/docker-library/python/blob/88ba87d31a3033d4dbefecf44ce25aa1b69ab3e5/3.6/alpine/Dockerfile]. 
+There can be only one `CMD` per Dockerfile. If you specify more thane one `CMD`, then the last `CMD` will take effect. The parent python:3.6.1-alpine also specifies a `CMD` (`CMD python2`). You can find the Dockerfile for the official python:alpine image (here) [https://github.com/docker-library/python/blob/88ba87d31a3033d4dbefecf44ce25aa1b69ab3e5/3.6/alpine/Dockerfile].
 
 You can use the official python image directly to run python scripts without installing python on your host. But today, we are creating a custom image to include our source, so that we can build an image with our application and ship it around to other environments.
 
 **COPY app.py /app.py**
 This copies the app.py in the local directory (where you will run `docker image build`) into a new layer of the image. This instruction is the last line in the Dockerfile. Layers that change frequently, such as copying source code into the image, should be placed near the bottom of the file to take full advantage of the Docker layer cache. This allows us to avoid rebuilding layers that could otherwise be cached. For instance, if there was a change in the `FROM` instruction, it would invalidate the cache for all subsequent layers of this image. We will demonstrate a this little later in this lab.
 
-It seems counter-intuitive to put this after the `CMD ["python","app.py"]` line. Remember, the `CMD` line is executed only when the container is started, so we won't get a `file not found` error here. 
+It seems counter-intuitive to put this after the `CMD ["python","app.py"]` line. Remember, the `CMD` line is executed only when the container is started, so we won't get a `file not found` error here.
 
 And there you have it: a very simple Dockerfile. A full list of commands you can put into a Dockerfile can be found [here](https://docs.docker.com/engine/reference/builder/). Now that we defined our Dockerfile, let's use it to build our custom docker image.
 
-2. Build the docker image. 
+2. Build the docker image.
 
 Pass in `-t` to name your image `python-hello-world`.
 
@@ -111,11 +109,11 @@ $ docker image build -t python-hello-world .
 Sending build context to Docker daemon  3.072kB
 Step 1/4 : FROM python:3.6.1-alpine
 3.6.1-alpine: Pulling from library/python
-acb474fa8956: Pull complete 
-967ab02d1ea4: Pull complete 
-640064d26350: Pull complete 
-db0225fcac8f: Pull complete 
-5432cc692c60: Pull complete 
+acb474fa8956: Pull complete
+967ab02d1ea4: Pull complete
+640064d26350: Pull complete
+db0225fcac8f: Pull complete
+5432cc692c60: Pull complete
 Digest: sha256:768360b3fad01adffcf5ad9eccb4aa3ccc83bb0ed341bbdc45951e89335082ce
 Status: Downloaded newer image for python:3.6.1-alpine
  ---> c86415c03c37
@@ -188,7 +186,7 @@ You should see "hello world!" on your browser.
 If you want to see logs from your application you can use the `docker container logs` command. By default, `docker container logs` prints out what is sent to standard out by your application. Use `docker container ls` to find the id for your running container.
 
 ```sh
-$ docker container logs [container id] 
+$ docker container logs [container id]
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 172.17.0.1 - - [28/Jun/2017 19:35:33] "GET / HTTP/1.1" 200 -
 ```
@@ -208,10 +206,10 @@ Most organizations that use docker heavily will set up their own registry intern
 
 You can log into the docker registry account by typing `docker login` on your terminal.
 
-``` 
+```
 $ docker login
 Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
-Username: 
+Username:
 ```
 
 2. Tag your image with your username
@@ -229,13 +227,13 @@ Once we have a properly tagged image, we can use the `docker push` command to pu
 ```sh
 $ docker push jzaccone/python-hello-world
 The push refers to a repository [docker.io/jzaccone/python-hello-world]
-2bce026769ac: Pushed 
-64d445ecbe93: Pushed 
-18b27eac38a1: Mounted from library/python 
-3f6f25cd8b1e: Mounted from library/python 
-b7af9d602a0f: Mounted from library/python 
-ed06208397d5: Mounted from library/python 
-5accac14015f: Mounted from library/python 
+2bce026769ac: Pushed
+64d445ecbe93: Pushed
+18b27eac38a1: Mounted from library/python
+3f6f25cd8b1e: Mounted from library/python
+b7af9d602a0f: Mounted from library/python
+ed06208397d5: Mounted from library/python
+5accac14015f: Mounted from library/python
 latest: digest: sha256:508238f264616bf7bf962019d1a3826f8487ed6a48b80bf41fd3996c7175fd0f size: 1786
 ```
 
@@ -298,13 +296,13 @@ Notice the "Using cache" for steps 1-3. These layers of the Docker Image have al
 ```sh
 $ docker push jzaccone/python-hello-world
 The push refers to a repository [docker.io/jzaccone/python-hello-world]
-94525867566e: Pushed 
-64d445ecbe93: Layer already exists 
-18b27eac38a1: Layer already exists 
-3f6f25cd8b1e: Layer already exists 
-b7af9d602a0f: Layer already exists 
-ed06208397d5: Layer already exists 
-5accac14015f: Layer already exists 
+94525867566e: Pushed
+64d445ecbe93: Layer already exists
+18b27eac38a1: Layer already exists
+3f6f25cd8b1e: Layer already exists
+b7af9d602a0f: Layer already exists
+ed06208397d5: Layer already exists
+5accac14015f: Layer already exists
 latest: digest: sha256:91874e88c14f217b4cab1dd5510da307bf7d9364bd39860c9cc8688573ab1a3a size: 1786
 ```
 
@@ -314,9 +312,9 @@ When you change a layer, every layer built on top of that will have to be rebuil
 
 # Step 6: Understanding Image Layers
 
-One of the major design properties of Docker is its use of the union file system. 
+One of the major design properties of Docker is its use of the union file system.
 
-Consider the Dockerfile that we created before: 
+Consider the Dockerfile that we created before:
 ```sh
 FROM python:3.6.1-alpine
 RUN pip install flask
@@ -349,13 +347,13 @@ Image layering enables the docker caching mechanism for builds and pushes. For e
 ```sh
 $ docker push jzaccone/python-hello-world
 The push refers to a repository [docker.io/jzaccone/python-hello-world]
-94525867566e: Pushed 
-64d445ecbe93: Layer already exists 
-18b27eac38a1: Layer already exists 
-3f6f25cd8b1e: Layer already exists 
-b7af9d602a0f: Layer already exists 
-ed06208397d5: Layer already exists 
-5accac14015f: Layer already exists 
+94525867566e: Pushed
+64d445ecbe93: Layer already exists
+18b27eac38a1: Layer already exists
+3f6f25cd8b1e: Layer already exists
+b7af9d602a0f: Layer already exists
+ed06208397d5: Layer already exists
+5accac14015f: Layer already exists
 latest: digest: sha256:91874e88c14f217b4cab1dd5510da307bf7d9364bd39860c9cc8688573ab1a3a size: 1786
 ```
 
@@ -421,7 +419,7 @@ Total reclaimed space: 300.3kB
 
 # Summary
 
-In this lab, you started adding value by creating your own custom docker containers. 
+In this lab, you started adding value by creating your own custom docker containers.
 
 Key Takeaways:
 - The Dockerfile is how you create reproducible builds for your application and how you integrate your application with Docker into the CI/CD pipeline
@@ -430,4 +428,3 @@ Key Takeaways:
 - Docker makes use of the union file system and "copy on write" to reuse layers of images. This lowers the footprint of storing images and significantly increases the performance of starting containers.
 - Image layers are cached by the Docker build and push system. No need to rebuild or repush image layers that are already present on the desired system.
 - Each line in a Dockerfile creates a new layer, and because of the layer cache, the lines that change more frequently (e.g. adding source code to an image) should be listed near the bottom of the file.
-

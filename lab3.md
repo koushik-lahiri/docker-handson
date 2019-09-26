@@ -1,7 +1,5 @@
 # Lab 3- Introduction to Orchestration
 
-© Copyright IBM Corporation 2017
-
 IBM, the IBM logo and ibm.com are trademarks of International Business Machines Corp., registered in many jurisdictions worldwide. Other product and service names might be trademarks of IBM or other companies. A current list of IBM trademarks is available on the Web at &quot;Copyright and trademark information&quot; at www.ibm.com/legal/copytrade.shtml.
 
 
@@ -88,12 +86,12 @@ All `kubectl` commands for the rest of this lab need to be executed directly on 
 
 **Note:** While in this lab we will control the Kubernetes cluster directly from the master in which its running, the more likely usecase is that you control your Kubernetes cluster remotely by connecting the `kubectl` CLI client to your cluster remotely. This will become useful when you want to control production applications remotely instead of ssh-ing directly into production servers.
 
-# Step 2: Create a deployment 
+# Step 2: Create a deployment
 
 Now that we have our 3 node Kubernetes cluster initialized, let's deploy some containers. To run containers on a Kubernetes cluster, we want to create a deployment. A deployment is a Kubernetes object that manages multiple instances of a container of the same image deployed across a distributed cluster.
 
 Let's do a simple example using Nginx. For now we will create a deployment with just 1 running container, but we will scale up later.
- 
+
 1. Create a deployment using Nginx version 1.12
 
 ```sh
@@ -153,7 +151,7 @@ This command will create a link at the top of your screen in http://play-with-k8
 
 # Step 4: Scale your app
 
-Right now, our nginx deployment is only running one instance of our application. 
+Right now, our nginx deployment is only running one instance of our application.
 
 ```sh
 [node1 /]$ kubectl get deployment nginx
@@ -163,7 +161,7 @@ nginx     1         1         1            1           56m
 
 Let's scale up so we can handle more traffic using `kubectl scale`.
 
-```sh 
+```sh
 [node1 /]$ kubectl scale --replicas=10 deployment nginx
 deployment "nginx" scaled
 ```
@@ -329,7 +327,7 @@ nginx-778bbb6b8c-whqp8   1/1       Running   0          1m
 ```
 
 # Clean up
-To clean up using http://play-with-k8s.com, simply close the browser. You can delete objects manually using the `kubectl delete [object type] [object name]`. 
+To clean up using http://play-with-k8s.com, simply close the browser. You can delete objects manually using the `kubectl delete [object type] [object name]`.
 
 For example:
 
@@ -348,4 +346,3 @@ Key Takeaways
 - Kubernetes deployment objects manage containers with multiple replicas (pods) and also support rolling updates. Kubernetes service objects provide a single endpoint (public or private) and load balances across a set of pods.
 - There are many tools out there to help you run Kubernetes in production such as the [IBM Cloud Container Service](https://www.ibm.com/cloud-computing/bluemix/containers).
 - Explore the [official Kubernetes docs](https://kubernetes.io/docs/home/) to go deeper into Kubernetes
-

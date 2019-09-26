@@ -1,7 +1,5 @@
 # Lab 0 - Install Docker
 
-© Copyright IBM Corporation 2017
-
 IBM, the IBM logo and ibm.com are trademarks of International Business Machines Corp., registered in many jurisdictions worldwide. Other product and service names might be trademarks of IBM or other companies. A current list of IBM trademarks is available on the Web at &quot;Copyright and trademark information&quot; at www.ibm.com/legal/copytrade.shtml.
 
 This document is current as of the initial date of publication and may be changed by IBM at any time.
@@ -10,7 +8,7 @@ The information contained in these materials is provided for informational purpo
 
 # Overview
 
-In this lab, you will install docker. We will be using docker throughout the rest of the labs. 
+In this lab, you will install docker. We will be using docker throughout the rest of the labs.
 
 ## Prerequisites
 
@@ -35,4 +33,3 @@ If you don't want to install Docker, an alternative is to use [Play-With-Docker]
 # Summary
 
 By installing Docker, or alternatively, familiarizing yourself with http://play-with-docker.com, you are ready to complete the remaining labs in this course.
-
